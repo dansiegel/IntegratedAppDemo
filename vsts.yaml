@@ -3,7 +3,7 @@ resources:
   fetchDepth: 15
 queue:
   name: Hosted VS2017
-  condition: succeeded()
+  # condition: succeeded()
   demands: 
   - msbuild
   - visualstudio
