@@ -50,7 +50,7 @@ steps:
     configuration: '$(BuildConfiguration)'
 
 - task: PublishBuildArtifacts@1
-  displayName: Publish Artifact: WebDeploy
+  displayName: 'Publish Artifact: WebDeploy'
   inputs:
     ArtifactName: WebDeploy
 
