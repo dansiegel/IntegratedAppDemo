@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureADB2C.UI" Version="2.1.1" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="3.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
