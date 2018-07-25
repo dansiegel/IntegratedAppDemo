@@ -1,6 +1,6 @@
 resources:
 - repo: self
-
+  fetchDepth: 15
 queue:
   name: Hosted VS2017
   condition: succeeded()
@@ -8,15 +8,10 @@ queue:
   - msbuild
   - visualstudio
 
-trigger:
-  branches:
-    include:
-    - master
 
 variables:
-  BuildConfiguration: Release
-  BuildPlatform: Any CPU
-
+  BuildPlatform: 'Any CPU'
+  BuildConfiguration: 'Release'
 steps:
 - task: NuGetToolInstaller@0
   displayName: Use NuGet 4.6.2
@@ -26,12 +21,12 @@ steps:
 - task: NuGetCommand@2
   displayName: NuGet restore AppCenterPushNotificationRelay
   inputs:
-    restoreSolution: 'AppCenterPushNotificationRelay\AppCenterPushNotificationRelay.sln'
+    restoreSolution: 'AppCenterPushNotificationRelay/AppCenterPushNotificationRelay.sln'
 
 - task: VSBuild@1
-  displayName: Build solution AppCenterPushNotificationRelay\AppCenterPushNotificationRelay.sln
+  displayName: Build solution AppCenterPushNotificationRelay/AppCenterPushNotificationRelay.sln
   inputs:
-    solution: 'AppCenterPushNotificationRelay\AppCenterPushNotificationRelay.sln'
+    solution: 'AppCenterPushNotificationRelay/AppCenterPushNotificationRelay.sln'
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(Build.ArtifactStagingDirectory)\AppCenterNotificationRelay\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
@@ -50,8 +45,7 @@ steps:
     configuration: '$(BuildConfiguration)'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: WebDeploy'
+  displayName: 'Publish Artifact: NuGet'
   inputs:
     ArtifactName: WebDeploy
-
 
