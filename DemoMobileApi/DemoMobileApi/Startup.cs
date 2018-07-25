@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Azure.ServiceBus;
 using DemoMobileApi.Models;
+using DemoMobileApi.DAL;
+using Microsoft.EntityFrameworkCore;
 
 namespace DemoMobileApi
 {
@@ -29,11 +31,12 @@ namespace DemoMobileApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ServiceBusConfiguration>(Configuration.GetSection("ServiceBus"));
+            services.AddDbContext<TodoContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IQueueClient>(options =>
             {
-                var config = options.GetService<ServiceBusConfiguration>();
-                return new QueueClient(config.ConnectionString, config.QueueName);
+                var sbConnString = Configuration.GetConnectionString("ServiceBus");
+                var queueName = Configuration["QueueName"];
+                return new QueueClient(sbConnString, queueName);
             });
             
             services.AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
