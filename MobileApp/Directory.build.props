@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+
+  <PropertyGroup>
+    <EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
+    <EnableDefaultNoneItems Condition=" '$(EnableDefaultNoneItems)' == '' ">true</EnableDefaultNoneItems>
+    <EnableDefaultXamlItems Condition=" '$(EnableDefaultXamlItems)' == '' ">true</EnableDefaultXamlItems>
+    <EnableDefaultEmbeddedResourceItems Condition=" '$(EnableDefaultEmbeddedResourceItems)' == '' ">true</EnableDefaultEmbeddedResourceItems>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Mock' ">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'AppStore' ">
+    <DefineConstants>$(DefineConstants);DISABLE_XAMARINFORMSLIVE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(AppStoreRelease)' != '' ">
+    <DefineConstants>$(DefineConstants);APPSTORE_RELEASE</DefineConstants>
+  </PropertyGroup>
+
+</Project>

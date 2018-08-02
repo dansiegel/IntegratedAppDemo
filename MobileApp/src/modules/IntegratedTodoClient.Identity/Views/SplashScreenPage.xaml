@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:i18n="clr-namespace:IntegratedTodoClient.Identity.Resources"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
+             xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations" 
+             Title="{Binding Title}" 
+             BackgroundColor="{StaticResource PrimaryDark}"
+             x:Class="IntegratedTodoClient.Identity.Views.SplashScreenPage">
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+        <ffimageloading:CachedImage HorizontalOptions="Center" VerticalOptions="Center" DownsampleToViewSize="true" Aspect="AspectFill" HeightRequest="100" WidthRequest="100">
+            <ffimageloading:CachedImage.Source>
+                <OnPlatform x:TypeArguments="ImageSource">
+                    <On Platform="Android">launchscreen_icon.png</On>
+                    <On Platform="iOS">AppIcon.png</On>
+                </OnPlatform>
+            </ffimageloading:CachedImage.Source>
+            <ffimageloading:CachedImage.Transformations>
+                <fftransformations:CircleTransformation />
+            </ffimageloading:CachedImage.Transformations>
+        </ffimageloading:CachedImage>
+        <ActivityIndicator Color="{StaticResource Accent}" IsRunning="true" />
+        <Label Text="Loading..." TextColor="{StaticResource Accent}" />
+    </StackLayout>
+</ContentPage>
