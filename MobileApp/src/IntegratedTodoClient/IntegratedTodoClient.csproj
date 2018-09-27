@@ -7,22 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.DryIoc.Forms" Version="7.0.0.396" />
-    <PackageReference Include="Prism.Plugin.Popups" Version="2.0.0-pre6" />
+    <PackageReference Include="Prism.DryIoc.Forms" Version="7.1.0.279-pre" />
+    <PackageReference Include="Prism.Plugin.Popups" Version="2.1.0.182-pre" />
     <PackageReference Include="Plugin.Multilingual" Version="1.0.2" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.3.840" />
     <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.3.840" />
     <PackageReference Include="Prism.QuickStart.MFractor.Config" Version="1.0.3" PrivateAssets="all" />
-    <PackageReference Include="LiveXAML" Version="2.1.36" />
+    <PackageReference Include="LiveXAML" Version="2.1.41" />
     <PackageReference Include="Mobile.BuildTools" Version="1.4.0.638" />
-    <PackageReference Include="PropertyChanged.Fody" Version="2.5.9" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="1.1.4-preview0002" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.5.11" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="2.0.1-preview" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Microsoft.AppCenter.Push" Version="1.8.0" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.8.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.8.0" />
-    <PackageReference Include="Microsoft.AppCenter.Distribute" Version="1.8.0" />
-    <PackageReference Include="Xamarin.Forms" Version="3.1.0.637273" />
+    <PackageReference Include="Microsoft.AppCenter.Push" Version="1.9.0" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.9.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.9.0" />
+    <PackageReference Include="Microsoft.AppCenter.Distribute" Version="1.9.0" />
+    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
     <PackageReference Include="Prism.Plugin.Logging.AppCenter" Version="1.1.0.89" />
   </ItemGroup>
 

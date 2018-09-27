@@ -2,15 +2,16 @@ using System;
 using System.Collections.Generic;
 using FFImageLoading.Helpers;
 using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using Prism.Logging;
 
 namespace IntegratedTodoClient.Services
 {
-    public class MCAnalyticsLogger : ILoggerFacade, IMiniLogger
+    public class AppCenterLogger : ILoggerFacade, IMiniLogger, ILogger
     {
         public void Debug(string message)
         {
-            Analytics.TrackEvent("Debug", new Dictionary<string, string>
+            Log("Debug", new Dictionary<string, string>
             {
                 { "logger", nameof(IMiniLogger) },
                 { "message", message }
@@ -19,7 +20,7 @@ namespace IntegratedTodoClient.Services
 
         public void Error(string errorMessage)
         {
-            Analytics.TrackEvent("Error", new Dictionary<string, string>
+            Log("Error", new Dictionary<string, string>
             {
                 { "logger", nameof(IMiniLogger) },
                 { "message", errorMessage }
@@ -28,7 +29,7 @@ namespace IntegratedTodoClient.Services
 
         public void Error(string errorMessage, Exception ex)
         {
-            Analytics.TrackEvent("Error", new Dictionary<string, string>
+            Log("Error", new Dictionary<string, string>
             {
                 { "logger", nameof(IMiniLogger) },
                 { "message", errorMessage },
@@ -39,12 +40,22 @@ namespace IntegratedTodoClient.Services
 
         public void Log(string message, Category category, Priority priority)
         {
-            Analytics.TrackEvent($"{category}", new Dictionary<string, string>
+            Log($"{category}", new Dictionary<string, string>
             {
                 { "logger", nameof(ILoggerFacade) },
                 { "priority", $"{priority}" },
                 { "message", message }
             });
+        }
+
+        public void Log(string message, IDictionary<string, string> properties)
+        {
+            Analytics.TrackEvent(message, properties);
+        }
+
+        public void Report(Exception ex, IDictionary<string, string> properties)
+        {
+            Crashes.TrackError(ex, properties);
         }
     }
 }

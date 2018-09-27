@@ -2,12 +2,10 @@
 using System.Threading.Tasks;
 using IntegratedTodoClient.Models;
 
-namespace IntegratedTodoClient.Services
+namespace IntegratedTodoClient.Todo.Services
 {
     public interface IApiClient
     {
-        Task<bool> LoginAsync();
-
         Task<UserProfile> GetUserProfileAsync();
 
         Task SaveTodoItemAsync(TodoItem item);

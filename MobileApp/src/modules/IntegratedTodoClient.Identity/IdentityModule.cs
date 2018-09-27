@@ -11,7 +11,7 @@ namespace IntegratedTodoClient.Identity
         public void OnInitialized(IContainerProvider containerProvider)
         {
             // Handle post initialization tasks like resolving IEventAggregator to subscribe events
-            AppResources.Culture = CrossMultilingual.Current.DeviceCultureInfo;
+            // AppResources.Culture = CrossMultilingual.Current.DeviceCultureInfo;
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)

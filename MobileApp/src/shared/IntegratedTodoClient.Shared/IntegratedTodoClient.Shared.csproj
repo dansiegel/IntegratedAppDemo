@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Forms" Version="7.0.0.396" />
+    <PackageReference Include="Prism.Forms" Version="7.1.0.279-pre" />
     <PackageReference Include="Prism.Plugin.Logging.Common" Version="1.1.0.89" />
-    <PackageReference Include="PropertyChanged.Fody" Version="2.5.9" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.5.11" />
   </ItemGroup>
 </Project>

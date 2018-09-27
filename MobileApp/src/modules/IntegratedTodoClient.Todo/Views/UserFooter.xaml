@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<StackLayout xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IntegratedTodoClient.Todo.Views.UserFooter"
+             VerticalOptions="Center"
+             HorizontalOptions="Center">
+    <Label Text="{Binding Name}" />
+    <Label Text="{Binding Email}" />
+    <Label Text="{Binding UUID, StringFormat='Install Id: {0}'}"
+           HorizontalTextAlignment="Center"/>
+</StackLayout>

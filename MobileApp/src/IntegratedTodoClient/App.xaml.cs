@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using IntegratedTodoClient.Resources;
 using IntegratedTodoClient.Services;
-using IntegratedTodoClient.Views;
 using Plugin.Multilingual;
 using Prism;
 using Prism.Ioc;
@@ -18,26 +17,20 @@ using Microsoft.AppCenter.Distribute;
 using Microsoft.AppCenter.Push;
 using Prism.Logging;
 using Xamarin.Forms;
-
-using DebugLogger = IntegratedTodoClient.Services.DebugLogger;
 using Prism.Services;
 using Microsoft.Identity.Client;
+
+using DebugLogger = IntegratedTodoClient.Services.DebugLogger;
+using System.Collections.Generic;
+using Prism.Modularity;
+using IntegratedTodoClient.Todo;
+using IntegratedTodoClient.Identity;
+using System.Linq;
 
 namespace IntegratedTodoClient
 {
     public partial class App : PrismApplication
     {
-        //public static string Tenant = "fabrikamb2c.onmicrosoft.com";
-        public static string PolicySignUpSignIn = "b2c_1_susi";
-        public static string PolicyEditProfile = "b2c_1_edit_profile";
-        public static string PolicyResetPassword = "b2c_1_reset";
-
-        public static string[] Scopes = { $"https://{Secrets.Tenant}/demoapi/demo.read" };
-        //public static string ApiEndpoint = "https://fabrikamb2chello.azurewebsites.net/hello";
-
-        public static string AuthorityBase = $"https://login.microsoftonline.com/tfp/{Secrets.Tenant}/";
-        public static string Authority = $"{AuthorityBase}{PolicySignUpSignIn}";
-
         /* 
          * NOTE: 
          * The Xamarin Forms XAML Previewer in Visual Studio uses System.Activator.CreateInstance.
@@ -52,18 +45,27 @@ namespace IntegratedTodoClient
         public App(IPlatformInitializer initializer)
             : base(initializer)
         {
-            // https://docs.microsoft.com/en-us/mobile-center/sdk/push/xamarin-forms
-            Push.PushNotificationReceived += OnPushNotificationReceived;
 
         }
 
         protected override async void OnInitialized()
         {
             InitializeComponent();
+            // https://docs.microsoft.com/en-us/mobile-center/sdk/push/xamarin-forms
+            Push.PushNotificationReceived += OnPushNotificationReceived;
+
             AppCenter.Start(AppConstants.AppCenterStart,
                             typeof(Analytics), typeof(Crashes), typeof(Push));
             LogUnobservedTaskExceptions();
             AppResources.Culture = CrossMultilingual.Current.DeviceCultureInfo;
+
+            Logger.LogCallback = delegate (Microsoft.Identity.Client.LogLevel level, string message, bool containsPii)
+            {
+                Console.WriteLine($"[{level}] - {message}");
+            };
+
+            Logger.Level = Microsoft.Identity.Client.LogLevel.Verbose;
+            Logger.PiiLoggingEnabled = true;
 
             await NavigationService.NavigateAsync("SplashScreenPage");
         }
@@ -72,80 +74,46 @@ namespace IntegratedTodoClient
         {
             // Register the Popup Plugin Navigation Service
             containerRegistry.RegisterPopupNavigationService();
-            containerRegistry.RegisterInstance(CreateLogger());
 
-            var pca = new PublicClientApplication(Secrets.ClientId, Authority)
-            {
-                RedirectUri = $"msal{Secrets.ClientId}://auth"
-            };
-            containerRegistry.RegisterInstance<IPublicClientApplication>(pca);
-                             
+#if DEBUG
+            containerRegistry.GetContainer().RegisterMany<DebugLogger>(Reuse.Singleton, serviceTypeCondition:
+                t => typeof(DebugLogger).GetInterfaces().Any(i => i == t));
+#else
+            containerRegistry.GetContainer().RegisterMany<AppCenterLogger>(Reuse.Singleton, serviceTypeCondition:
+                t => typeof(AppCenterLogger).GetInterfaces().Any(i => i == t));
+#endif
+
+            containerRegistry.RegisterInstance<IPublicClientApplication>(
+                new PublicClientApplication(Secrets.ClientId, AppConstants.Authority)
+                {
+                    RedirectUri = $"msal{Secrets.ClientId}://auth",
+                    ValidateAuthority = true
+                });
+            containerRegistry.GetContainer().RegisterMany<ClientOptions>(Reuse.Singleton, serviceTypeCondition:
+                t => typeof(ClientOptions).GetInterfaces().Any(i => i == t));
 
             // Navigating to "TabbedPage?createTab=ViewA&createTab=ViewB&createTab=ViewC will generate a TabbedPage
             // with three tabs for ViewA, ViewB, & ViewC
             // Adding `selectedTab=ViewB` will set the current tab to ViewB
             containerRegistry.RegisterForNavigation<TabbedPage>();
             containerRegistry.RegisterForNavigation<NavigationPage>();
-            containerRegistry.RegisterForNavigation<MainPage>();
-            containerRegistry.RegisterForNavigation<TodoDetail>();
-            containerRegistry.RegisterForNavigation<SplashScreenPage>();
         }
 
-        protected override async void OnStart()
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            // Handle when your app starts
-            if (await Analytics.IsEnabledAsync())
-            {
-                System.Diagnostics.Debug.WriteLine("Analytics is enabled");
-                FFImageLoading.ImageService.Instance.Config.Logger = (IMiniLogger)Container.Resolve<ILoggerFacade>();
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("Analytics is disabled");
-            }
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle IApplicationLifecycle
-            base.OnSleep();
-
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle IApplicationLifecycle
-            base.OnResume();
-
-            // Handle when your app resumes
-        }
-
-        private ILoggerFacade CreateLogger()
-        {
-            switch (Xamarin.Forms.Device.RuntimePlatform)
-            {
-                case "iOS":
-                    if (!string.IsNullOrWhiteSpace(Secrets.AppCenter_iOS_Secret))
-                        return CreateAppCenterLogger();
-                    break;
-            }
-            return new DebugLogger();
-        }
-
-        private MCAnalyticsLogger CreateAppCenterLogger()
-        {
-            var logger = new MCAnalyticsLogger();
-            FFImageLoading.ImageService.Instance.Config.Logger = (IMiniLogger)logger;
-            return logger;
+            moduleCatalog.AddModule<IdentityModule>();
+            moduleCatalog.AddModule<TodoModule>(InitializationMode.OnDemand);
         }
 
         private void LogUnobservedTaskExceptions()
         {
             TaskScheduler.UnobservedTaskException += (sender, e) =>
             {
+#if DEBUG
                 Console.WriteLine(e.Exception);
-                //Container.Resolve<ILoggerFacade>().Log(e.Exception);
+#else
+                Crashes.TrackError(e.Exception, new Dictionary<string, string> { { "UnobservedException", "true" } });
+#endif
             };
         }
 

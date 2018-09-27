@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{26FE0B9F-C381-4DB2-897A-E59A22AE5A74}"
 	ProjectSection(SolutionItems) = preProject
+		build\AndroidTemplateManifest.xml = build\AndroidTemplateManifest.xml
 		build\BuildTemplateInfo.plist = build\BuildTemplateInfo.plist
 	EndProjectSection
 EndProject

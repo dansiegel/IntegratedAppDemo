@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using IntegratedTodoClient.Models;
 using IntegratedTodoClient.Services;
 using IntegratedTodoClient.Todo.Resources;
+using IntegratedTodoClient.Todo.Services;
+using IntegratedTodoClient.ViewModels;
 using Microsoft.AppCenter;
 using Prism.Commands;
 using Prism.Logging;
@@ -11,7 +13,7 @@ using Prism.Services;
 
 namespace IntegratedTodoClient.Todo.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : TodoViewModelBase
     {
         public MainPageViewModel(INavigationService navigationService, IPageDialogService pageDialogService, ILogger logger, IApiClient apiClient)
             : base(navigationService, pageDialogService, logger, apiClient)
@@ -26,12 +28,6 @@ namespace IntegratedTodoClient.Todo.ViewModels
 
         public ObservableCollection<TodoItem> TodoItems { get; set; }
 
-        public string Name { get; set; }
-
-        public string Email { get; set; }
-
-        public string UUID { get; set; }
-
         public DelegateCommand AddItemCommand { get; }
 
         public DelegateCommand RefreshCommand { get; }
@@ -41,27 +37,6 @@ namespace IntegratedTodoClient.Todo.ViewModels
         public override void OnAppearing()
         {
             OnRefreshCommandExecuted();
-        }
-
-        private async Task CheckAppCenterValuesAsync()
-        {
-            var id = await AppCenter.GetInstallIdAsync();
-
-            if (id.HasValue)
-            {
-                UUID = id.ToString();
-            }
-        }
-
-        public override async void OnNavigatedTo(NavigationParameters parameters)
-        {
-            await CheckAppCenterValuesAsync();
-            if(parameters.GetNavigationMode() == NavigationMode.New)
-            {
-                var user = await _apiClient.GetUserProfileAsync();
-                Name = $"{user.FirstName} {user.LastName}";
-                Email = user.Email;
-            }
         }
 
         private async void OnAddItemCommandExecuted()

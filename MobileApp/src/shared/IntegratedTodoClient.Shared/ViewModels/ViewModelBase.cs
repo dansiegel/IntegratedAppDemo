@@ -19,13 +19,10 @@ namespace IntegratedTodoClient.ViewModels
 
         protected INavigationService _navigationService { get; }
 
-        protected IApiClient _apiClient { get; }
-
         protected ILogger _logger { get; }
 
-        public ViewModelBase(INavigationService navigationService, IPageDialogService pageDialogService, ILogger logger, IApiClient apiClient)
+        public ViewModelBase(INavigationService navigationService, IPageDialogService pageDialogService, ILogger logger)
         {
-            _apiClient = apiClient;
             _logger = logger;
             _pageDialogService = pageDialogService;
             _navigationService = navigationService;
@@ -53,7 +50,7 @@ namespace IntegratedTodoClient.ViewModels
 
         protected virtual Task HandleNavigationRequestAsync(string uri) => HandleNavigationRequestAsync(uri, null);
 
-        protected virtual async Task HandleNavigationRequestAsync(string uri, NavigationParameters parameters)
+        protected virtual async Task HandleNavigationRequestAsync(string uri, INavigationParameters parameters)
         {
             try
             {
@@ -111,11 +108,11 @@ namespace IntegratedTodoClient.ViewModels
 
         #region INavigationAware
 
-        public virtual void OnNavigatingTo(NavigationParameters parameters) { }
+        public virtual void OnNavigatingTo(INavigationParameters parameters) { }
 
-        public virtual void OnNavigatedTo(NavigationParameters parameters) { }
+        public virtual void OnNavigatedTo(INavigationParameters parameters) { }
 
-        public virtual void OnNavigatedFrom(NavigationParameters parameters) { }
+        public virtual void OnNavigatedFrom(INavigationParameters parameters) { }
 
         #endregion INavigationAware
 
@@ -127,9 +124,9 @@ namespace IntegratedTodoClient.ViewModels
 
         #region IConfirmNavigation
 
-        public virtual bool CanNavigate(NavigationParameters parameters) => true;
+        public virtual bool CanNavigate(INavigationParameters parameters) => true;
 
-        public virtual Task<bool> CanNavigateAsync(NavigationParameters parameters) =>
+        public virtual Task<bool> CanNavigateAsync(INavigationParameters parameters) =>
             Task.FromResult(CanNavigate(parameters));
 
         #endregion IConfirmNavigation
