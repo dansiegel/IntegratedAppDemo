@@ -18,7 +18,7 @@ phases:
   - task: vs-publisher-473885.motz-mobile-buildtasks.android-manifest-version.android-manifest-version@0
     displayName: 'Bump Android Versions in AndroidManifest.xml'
     inputs:
-      sourcePath: MobileApp/src/IntegratedTodoClient.Droid/Properties/AndroidManifest.xml
+      sourcePath: MobileApp/build/AndroidTemplateManifest.xml
 
   - template: ../steps/nuget-restore.yml
     parameters:

@@ -25,9 +25,9 @@ phases:
       provProfileSecureFile: $(iOSProvisioningProfile)
 
   - task: vs-publisher-473885.motz-mobile-buildtasks.ios-bundle-version.ios-bundle-version@0
-    displayName: 'Bump iOS Versions in IntegratedTodoClient.iOS/Info.plist'
+    displayName: 'Bump iOS Versions in Info.plist'
     inputs:
-      sourcePath: MobileApp/src/IntegratedTodoClient.iOS/Info.plist
+      sourcePath: MobileApp/build/BuildTemplateInfo.plist
 
   - template: ../steps/nuget-restore.yml
     parameters:
