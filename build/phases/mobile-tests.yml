@@ -1,0 +1,21 @@
+parameters:
+  solution: '**/*.sln'
+
+phases:
+- phase: UnitTests
+  displayName: Run Tests
+  condition: succeeded()
+  queue:
+    name: Hosted VS2017
+
+  steps:
+  - template: ../steps/nuget-restore.yml
+    parameters:
+      solution: ${{ parameters.solution }}
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Tests'
+    inputs:
+      command: test
+      projects: ${{ parameters.solution }}
+      arguments: '-c $(BuildConfiguration) --collect:"Code Coverage" /p:DebugType=portable'

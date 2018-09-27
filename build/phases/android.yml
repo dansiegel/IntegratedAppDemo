@@ -1,0 +1,47 @@
+parameters:
+  solution: '**/*.sln'
+
+phases:
+- phase: AndroidBuild
+  displayName: Build Android App
+  dependsOn: UnitTests
+  condition: succeeded()
+  queue:
+    name: Hosted VS2017
+    demands:
+   - MSBuild
+   - Xamarin.Android
+   - JDK
+   - AndroidSDK
+
+  steps:
+  - task: vs-publisher-473885.motz-mobile-buildtasks.android-manifest-version.android-manifest-version@0
+    displayName: 'Bump Android Versions in AndroidManifest.xml'
+    inputs:
+      sourcePath: MobileApp/src/IntegratedTodoClient.Droid/Properties/AndroidManifest.xml
+
+  - template: ../steps/nuget-restore.yml
+    parameters:
+      solution: MobileApp/IntegratedTodoClient.sln
+
+  - task: XamarinAndroid@1
+    displayName: 'Build Xamarin.Android project **/*Droid*.csproj'
+    inputs:
+      projectFile: '**/*Droid*.csproj'
+      outputDirectory: '$(build.binariesdirectory)/$(BuildConfiguration)'
+      configuration: '$(BuildConfiguration)'
+
+  - task: AndroidSigning@3
+    displayName: 'Signing and aligning APK file(s) $(build.binariesdirectory)/$(BuildConfiguration)/*.apk'
+    inputs:
+      apkFiles: '$(build.binariesdirectory)/$(BuildConfiguration)/*.apk'
+      apksignerKeystoreFile: $(KeystoreFileName)
+      apksignerKeystorePassword: '$(KeystorePassword)'
+      apksignerKeystoreAlias: '$(KeystoreAlias)'
+      apksignerKeyPassword: '$(KeystorePassword)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Droid'
+    inputs:
+      PathtoPublish: '$(build.binariesdirectory)/$(BuildConfiguration)'
+      ArtifactName: Droid

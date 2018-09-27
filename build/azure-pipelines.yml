@@ -1,0 +1,35 @@
+trigger:
+- master
+
+name: $(Build.BuildId)
+
+variables:
+  BuildPlatform: 'Any CPU'
+  BuildConfiguration: 'Release'
+
+phases:
+- template: phases/webpack.yml
+  parameters:
+    solution: 'AppCenterPushNotificationRelay/AppCenterPushNotificationRelay.sln'
+    phaseName: NotificationRelay
+    displayName: App Center Push Notification Relay
+    artifactName: NotificationRelay
+
+- template: phases/webpack.yml
+  parameters:
+    solution: 'DemoMobileApi/DemoMobileApi.sln'
+    phaseName: MobileApi
+    displayName: Mobile Api
+    artifactName: MobileApi
+
+- template: phases/mobile-tests.yml
+  parameters:
+    solution: 'MobileApp/IntegratedTodoClient.sln'
+
+- template: phases/android.yml
+  parameters:
+    solution: 'MobileApp/IntegratedTodoClient.sln'
+
+- template: phases/iosapp.yml
+  parameters:
+    solution: 'MobileApp/IntegratedTodoClient.sln'

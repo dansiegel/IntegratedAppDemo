@@ -1,0 +1,32 @@
+parameters:
+  solution: '**/*.sln'
+  artifactName: 'drop'
+  displayName: ''
+  phaseName: ''
+
+phases:
+- phase: ${{ parameters.phaseName }}
+  displayName: ${{ parameters.displayName }}
+  condition: succeeded()
+  queue:
+    name: Hosted VS2017
+    demands:
+   - MSBuild
+
+  steps:
+  - template: ../steps/nuget-restore.yml
+    parameters:
+      solution: ${{ parameters.solution }}
+
+  - task: VSBuild@1
+    displayName: Build Solution
+    inputs:
+      solution: ${{ parameters.solution }}
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(Build.ArtifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: WebDeploy'
+    inputs:
+      ArtifactName: ${{ parameters.artifactName }}
